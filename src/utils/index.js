@@ -125,11 +125,11 @@ export const shapes = [
     [0,1,1,0],
     [0,0,0,0],
     [0,0,0,0]]]
-]
+];
 
 export const randomShape = () => {
-  return random(1, shapes.length - 1)
-}
+  return random(1, shapes.length - 1);
+};
 
 export const defaultState = () => {
   return {
@@ -152,5 +152,55 @@ export const defaultState = () => {
     speed: 1000,
     // Game isn't over yet
     gameOver: false
+  };
+};
+
+export const nextRotation = (shape, rotation) => {
+  return (rotation + 1) % shapes[shape].length;
+};
+
+export const canMoveTo = (shape, grid, x, y, rotation) => {
+  const currentShape = shapes[shape][rotation]
+  // Loop through all rows and cols of the **shape**
+  for (let row = 0; row < currentShape.length; row += 1) {
+    for (let col = 0; col < currentShape[row].length; col += 1) {
+      // look for a 1 here
+      if (currentShape[row][col] !== 0) {
+        // x offset on grid
+        const proposedX = col + x;
+        const proposedY = row + y;
+        if (proposedY < 0) {
+          continue;
+        }
+        // Get the row on the grid
+        const possibleRow = grid[proposedY];
+        if (possibleRow) {
+          if (possibleRow[proposedX] === undefined || possibleRow[proposedX] !== 0) {
+            return false;
+          };
+        } else {
+          return false;
+        };
+      };
+    };
+  };
+  return true;
+};
+
+import {
+  defaultState,
+  nextRotation,
+  canMoveTo } from '../utils'
+
+  const gameReducer = (state = defaultState(), action) => {
+    const { shape, grid, x, y, rotation, nextShape, score, isRunning } = state;
+
+    switch(action.type) {
+      case ROTATE:
+        const newRotation = nextRotation(shape, rotation)
+        if (canMoveTo(shape, grid, x, y, newRotation)) {
+          return{ ...state, rotation: newRotation };
+        }
+        return state;
+    }
   }
-}
