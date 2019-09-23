@@ -11,8 +11,8 @@ class App extends Component {
         </header>
           <GridSquare color="1" />
       </div>
-    )
-  }
-}
+    );
+  };
+};
 
 export default App;
