@@ -14,18 +14,23 @@ const gameReducer = (state = defaultState(), action) => {
 
     switch(action.type) {
       case ROTATE:
-        const newRotation = newRotation(shape, rotation)
+        const newRotation = nextRotation(shape, rotation)
         if (canMoveTo(shape, grid, x, y, newRotation)) {
-          return { ...state, rotation: newRotation}
+          return { ...state, rotation: newRotation }
         }
         return state
   
       case MOVE_RIGHT:
+        if (canMoveTo(shape, grid, x + 1, y, rotation)) {
+          return { ...state, x: x + 1 }
+        }
   
         return state
   
       case MOVE_LEFT:
-  
+        if (canMoveTo(shape, grid, x - 1, y, rotation)) {
+          return { ...state, x: x - 1 }
+        }
         return state
   
       case MOVE_DOWN:
