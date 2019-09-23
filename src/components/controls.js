@@ -15,7 +15,7 @@ class Controls extends Component {
         }}>Right</button>
 
         {/* rotate */}
-        <button className="control-button" onclick={(e) => {
+        <button className="control-button" onClick={(e) => {
 
         }}>Rotate</button>
 
