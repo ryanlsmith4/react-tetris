@@ -12,8 +12,8 @@ class App extends Component {
           <h1 className="App-title">Tetris Redux</h1>
         </header>
           <GridBoard color="1" />
-            <NextBlock />
-              <ScoreBoard />
+          <NextBlock />
+          <ScoreBoard />
       </div>
     );
   };
