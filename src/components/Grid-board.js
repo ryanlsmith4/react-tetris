@@ -5,13 +5,13 @@ class GridBoard extends Component {
   // generates an array of 18 rows, each containing 10 GridSquares
   makeGrid() {
     const grid = [];
-    for (let row = 0; row < 18; row ++ ) {
+    for (let row = 0; row < 18; row+=1 ) {
       grid.push([])
-      for (let col = 0; col < 10; col++ ) {
+      for (let col = 0; col < 10; col+=1 ) {
         grid[row].push(<GridSquare key={`${col}${row}`} color="1" /> )
       };
     };
-    return grid
+    return grid;
   };
   // The components generated in makeGrid are rendered in div.grid-board
   render() {

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import GridSquare from './components/Grid-square';
+import GridBoard from './components/grid-board';
+import NextBlock from './components/next-block';
+import ScoreBoard from './components/score-board';
 
 class App extends Component {
   render() {
@@ -9,7 +11,9 @@ class App extends Component {
         <header className="App-header">
           <h1 className="App-title">Tetris Redux</h1>
         </header>
-          <GridSquare color="1" />
+          <GridBoard color="1" />
+            <NextBlock />
+              <ScoreBoard />
       </div>
     );
   };
