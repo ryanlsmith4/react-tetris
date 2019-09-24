@@ -5,6 +5,37 @@ import { moveDown } from '../actions';
 import { shapes } from '../utils';
 
 class GridBoard extends Component {
+  constructor(props) {
+    super(props);
+
+    this.lastUpdateTime = 0;
+    this.progressTime = 0;
+  }
+  componentDidMount() {
+    window.requestAnimationFrame(this.update.bind(this))
+  }
+
+  update(time) {
+    // If the game is running we want to request a callback at the next animation frame
+    window.requestAnimationFrame(this.update.bind(this))
+    if (!this.props.isRunning) {
+      return
+    }
+    // If lastUpdateTime not been set, set it to the current time.
+    if (!this.lastUpdateTime) {
+      this.lastUpdateTime = time;
+    }
+    const deltaTime = time - this.lastUpdateTime
+    this.progressTime += deltaTime;
+
+    if (this.progressTime > this.props.speed) {
+      this.props.moveDown();
+      this.progressTime = 0;
+    }
+    // Set the last update time
+    this.lastUpdateTime = time;
+  }
+
   // generates an array of 18 rows, each containing 10 GridSquares
   makeGrid() {
     // collect properties mapped to props from state.

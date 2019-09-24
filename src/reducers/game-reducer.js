@@ -46,7 +46,7 @@ const gameReducer = (state = defaultState(), action) => {
        const newGrid = addBlockToGrid(shape, grid, x, y, rotation);
        const newState = defaultState();
        newState.grid = newGrid;
-       newState.shape = nextShape();
+       newState.shape = nextShape;
        newState.nextShape = randomShape();
        newState.score = score;
        newState.isRunning = isRunning;
@@ -58,15 +58,15 @@ const gameReducer = (state = defaultState(), action) => {
        }
        // Update the score based on if the rows were completed or not
        newState.score = score + checkRows(newGrid);
-        return newState
+        return newState;
   
       case RESUME:
   
-        return state
+        return { ...state, isRunning: true };
   
       case PAUSE:
   
-        return state
+        return { ...state, isRunning: false };
   
       case GAME_OVER:
   
