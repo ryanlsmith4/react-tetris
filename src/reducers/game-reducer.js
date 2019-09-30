@@ -1,17 +1,17 @@
-import { defaultState, randomShape } from '../utils';
 import {
   MOVE_RIGHT, MOVE_LEFT, MOVE_DOWN, ROTATE,
   PAUSE, RESUME, RESTART, GAME_OVER
 } from '../actions';
 
 import {
+  defaultState,
   nextRotation,
   canMoveTo,
   addBlockToGrid,
   checkRows } from '../utils'
 
 const gameReducer = (state = defaultState(), action) => {
-  const { shape, grid, x, y, rotation, nextShape, score, isRunning } = state;
+  const { shape, grid, x, y, rotation, nextShape, score, linesCleared, isRunning } = state;
 
     switch(action.type) {
       case ROTATE:
@@ -38,26 +38,38 @@ const gameReducer = (state = defaultState(), action) => {
         // Get the next potential Y position
         const maybeY = y + 1;
        // Check if the current block can move here
-       if (canMoveTo(shape, grid, x, maybeY, rotation)) {
-         // if so move the block
-         return {...state, y: maybeY};
-       }
-       // If not place the block
-       const newGrid = addBlockToGrid(shape, grid, x, y, rotation);
-       const newState = defaultState();
-       newState.grid = newGrid;
-       newState.shape = nextShape;
-       newState.nextShape = randomShape();
-       newState.score = score;
-       newState.isRunning = isRunning;
-       if (!canMoveTo(nextShape, newGrid, 0, 4, 0)) {
-         // Game Over
-         console.log("Game Should be Over");
-         newState.shape = 0;
-         return { ...state, gameOver: true };
-       }
-       // Update the score based on if the rows were completed or not
-       newState.score = score + checkRows(newGrid);
+        if (canMoveTo(shape, grid, x, maybeY, rotation)) {
+          // if so move the block
+          return { ...state, y: maybeY };
+        } 
+        // If not place the block
+        // This returns an object witha grid and a gameover bool
+        const obj = addBlockToGrid(shape, grid, x, y, rotation);
+
+        const newGrid = obj.grid;
+        const gameOver = obj.gameOver;
+
+        if (gameOver) {
+          // Game Over
+          const newState = { ...state };
+          newState.shape = 0;
+          newState.grid = newGrid;
+          return { ...state, gameOver: true }
+        }
+
+        // reset somethings to start new shape/block
+        const newState = defaultState();
+        newState.grid = newGrid;
+        newState.shape = nextShape;
+        newState.score = score;
+        newState.isRunning = isRunning;
+
+        // TODO: Check and Set level
+        // Score increases decreses interval
+        const checkRowsResult = checkRows(newGrid);
+        newState.score = score + checkRowsResult.score;
+        newState.linesCleared = linesCleared + checkRowsResult.rowsCleared;
+        // newState.score = score + checkRows(newGrid);
         return newState;
   
       case RESUME:
@@ -74,7 +86,7 @@ const gameReducer = (state = defaultState(), action) => {
   
       case RESTART:
   
-        return state
+        return defaultState()
   
       default:
         return state

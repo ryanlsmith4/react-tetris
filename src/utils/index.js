@@ -162,21 +162,22 @@ export const nextRotation = (shape, rotation) => {
 export const canMoveTo = (shape, grid, x, y, rotation) => {
   const currentShape = shapes[shape][rotation]
   // Loop through all rows and cols of the **shape**
-  for (let row = 0; row < currentShape.length; row += 1) {
-    for (let col = 0; col < currentShape[row].length; col += 1) {
+  for (let row = 0; row < currentShape.length; row += 1) {   // Loop through rows
+    for (let col = 0; col < currentShape[row].length; col += 1) {   // Loop through cols
       // look for a 1 here
-      if (currentShape[row][col] !== 0) {
+      if (currentShape[row][col] !== 0) {  // Look for a 1 here
         // x offset on grid
-        const proposedX = col + x;
-        const proposedY = row + y;
+        const proposedX = col + x;  // x offset on grid
+        const proposedY = row + y;  // y offset on grid
         if (proposedY < 0) {
           continue;
         }
         // Get the row on the grid
-        const possibleRow = grid[proposedY];
-        if (possibleRow) {
+        const possibleRow = grid[proposedY];  // Get the row on the grid
+        if (possibleRow) {  // Check row exists
+          // Check this column in the row undefined and it's off ghe edges, 0 and it's empty
           if (possibleRow[proposedX] === undefined || possibleRow[proposedX] !== 0) {
-            return false;
+            return false;  // undefined or not 0 and it's occupied we can't move here
           };
         } else {
           return false;
@@ -187,20 +188,31 @@ export const canMoveTo = (shape, grid, x, y, rotation) => {
   return true;
 };
 
+
+//           addBlockToGrid = (shape, grid, x, y, rotation);
 export const addBlockToGrid = (shape, grid, x, y, rotation) => {
+  let blockOffGrid = false;
   // Get the block array
   const block = shapes[shape][rotation];
   // Copy the grid
   const newGrid = [...grid];
+
   // Map the block onto the grid
   for (let row = 0; row < block.length; row += 1) {
     for (let col = 0; col < block[row].length; col += 1) {
       if (block[row][col]) {
-        newGrid[row + y][col + x] = shape;
+        const yIndex = row + y;
+        // If the yIndex is less than 0 than part of the block
+        // is off the top of the screen and the game is over
+        if (yIndex < 0) {
+          blockOffGrid = true;
+        } else {
+          newGrid[row + y][col + x] = shape;
+        }
       } 
     }
-    return newGrid;
   }
+  return { grid: newGrid, gameOver:blockOffGrid };
 }
 
 export const checkRows = (grid) => {
@@ -208,7 +220,7 @@ export const checkRows = (grid) => {
   // i.e 40 points for completing one row, 100 points for two rows
   const points = [0, 40, 100, 300, 1200];
   let completedRows = 0;
-  for (let row = 0; row < grid.lengthl; row += 1) {
+  for (let row = 0; row < grid.length; row += 1) {
     // No empty cells means it can't find a 0, so the row must be complete!
     if (grid[row].indexOf(0) === -1) {
       completedRows += 1;
@@ -217,5 +229,6 @@ export const checkRows = (grid) => {
       grid.unshift(Array(10).fill(0));
     }
   }
-  return points[completedRows];
+  console.log(points[completedRows])
+  return { score:points[completedRows], rowsCleared: completedRows };
 }
